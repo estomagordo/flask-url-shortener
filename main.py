@@ -52,10 +52,15 @@ def shorten_url():
     return jsonify({'shortened_url': shortened_url}), 201
 
 
+@app.route('/shorten_url', methods=['GET'])
+def shorten_url_get():
+    return bad_request('Must use POST.')
+
+
 @app.route('/<alias>', methods=['GET'])
 def get_shortened(alias):
     if alias not in shortened:
-        abort(400)
+        return bad_request('Unknown alias.')
 
     url = shortened[alias]
     
