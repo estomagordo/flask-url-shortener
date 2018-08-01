@@ -1,3 +1,4 @@
+from base64 import b64encode
 from hashlib import md5
 import re
 
@@ -13,6 +14,8 @@ regex = re.compile(
         r'(?::\d+)?'
         r'(?:/?|[/?]\S+)$', re.IGNORECASE)
 
+HASH_SIZE = 12  # 72 bits of entropy.
+
 app = Flask(__name__)
 shortened = {}
 
@@ -22,13 +25,16 @@ def not_valid(url):
 
 
 def shorten(url):
-    return md5(str.encode(url)).hexdigest()
+    hash = md5(str.encode(url))
+    b64 = b64encode(hash.digest())
+    return b64.decode('utf-8')[:HASH_SIZE]
 
 
 def bad_request(message):
     response = jsonify({'message': message})
     response.status_code = 400
     return response
+
 
 @app.route('/shorten_url', methods=['POST'])
 def shorten_url():
