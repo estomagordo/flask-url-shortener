@@ -1,5 +1,5 @@
 from base64 import b64encode
-from hashlib import md5
+from hashlib import blake2b
 import re
 
 from flask import Flask, abort, jsonify, redirect, request
@@ -14,7 +14,7 @@ regex = re.compile(
         r'(?::\d+)?'
         r'(?:/?|[/?]\S+)$', re.IGNORECASE)
 
-HASH_SIZE = 12  # 72 bits of entropy.
+DIGEST_SIZE = 9  # 72 bits of entropy.
 
 app = Flask(__name__)
 shortened = {}
@@ -25,9 +25,9 @@ def not_valid(url):
 
 
 def shorten(url):
-    hash = md5(str.encode(url))
-    b64 = b64encode(hash.digest())
-    return b64.decode('utf-8')[:HASH_SIZE]
+    url_hash = blake2b(str.encode(url), digest_size=DIGEST_SIZE)
+    b64 = b64encode(url_hash.digest(), altchars=b'-_')
+    return b64.decode('utf-8')
 
 
 def bad_request(message):
