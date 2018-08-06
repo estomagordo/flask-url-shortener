@@ -1,5 +1,6 @@
 from base64 import b64encode
 from hashlib import blake2b
+import random
 import re
 
 from flask import Flask, abort, jsonify, redirect, request
@@ -26,6 +27,11 @@ def not_valid(url):
 
 def shorten(url):
     url_hash = blake2b(str.encode(url), digest_size=DIGEST_SIZE)
+
+    while url_hash in shortened:
+        url += str(random.randint(0, 9))
+        url_hash = blake2b(str.encode(url), digest_size=DIGEST_SIZE)
+        
     b64 = b64encode(url_hash.digest(), altchars=b'-_')
     return b64.decode('utf-8')
 
