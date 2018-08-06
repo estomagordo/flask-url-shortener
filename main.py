@@ -5,6 +5,8 @@ import re
 
 from flask import Flask, abort, jsonify, redirect, request
 
+app = Flask(__name__)
+
 
 def not_valid(url):
     return re.match(regex, url) is None
@@ -73,8 +75,6 @@ regex = re.compile(
         r'(?::\d+)?'
         r'(?:/?|[/?]\S+)$', re.IGNORECASE)
 DIGEST_SIZE = 9  # 72 bits of entropy.
-
-app = Flask(__name__)
 shortened = {}
 
 if __name__ == '__main__':
