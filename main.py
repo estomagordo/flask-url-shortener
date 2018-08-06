@@ -5,21 +5,6 @@ import re
 
 from flask import Flask, abort, jsonify, redirect, request
 
-# Due to https://stackoverflow.com/questions/7160737/python-how-to-validate-a-url-in-python-malformed-or-not#7160778
-# Slightly modified to not use ftp.
-regex = re.compile(
-        r'^(?:http)s?://'
-        r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+(?:[A-Z]{2,6}\.?|[A-Z0-9-]{2,}\.?)|'
-        r'localhost|'
-        r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'
-        r'(?::\d+)?'
-        r'(?:/?|[/?]\S+)$', re.IGNORECASE)
-
-DIGEST_SIZE = 9  # 72 bits of entropy.
-
-app = Flask(__name__)
-shortened = {}
-
 
 def not_valid(url):
     return re.match(regex, url) is None
@@ -31,7 +16,7 @@ def shorten(url):
     while url_hash in shortened:
         url += str(random.randint(0, 9))
         url_hash = blake2b(str.encode(url), digest_size=DIGEST_SIZE)
-        
+
     b64 = b64encode(url_hash.digest(), altchars=b'-_')
     return b64.decode('utf-8')
 
@@ -77,6 +62,20 @@ def get_shortened(alias):
     url = shortened[alias]
     
     return redirect(url, code=302)
+
+# From https://stackoverflow.com/questions/7160737/python-how-to-validate-a-url-in-python-malformed-or-not#7160778
+# Slightly modified to not use ftp.
+regex = re.compile(
+        r'^(?:http)s?://'
+        r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+(?:[A-Z]{2,6}\.?|[A-Z0-9-]{2,}\.?)|'
+        r'localhost|'
+        r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'
+        r'(?::\d+)?'
+        r'(?:/?|[/?]\S+)$', re.IGNORECASE)
+DIGEST_SIZE = 9  # 72 bits of entropy.
+
+app = Flask(__name__)
+shortened = {}
 
 if __name__ == '__main__':
     app.run(debug=True)
