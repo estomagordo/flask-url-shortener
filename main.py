@@ -8,8 +8,8 @@ from flask import Flask, abort, jsonify, redirect, request
 app = Flask(__name__)
 
 
-def not_valid(url):
-    return re.match(regex, url) is None
+def url_valid(url):
+    return re.match(regex, url) is not None
 
 
 def shorten(url):
@@ -42,7 +42,7 @@ def shorten_url():
     if url[:4] != 'http':
         url = 'http://' + url
 
-    if not_valid(url):
+    if not url_valid(url):
         return bad_request('Provided url is not valid.')
 
     shortened_url = shorten(url)
