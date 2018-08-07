@@ -3,7 +3,7 @@ import unittest
 import main
 
 
-class UrlShortenerTests(unittest.TestCase):
+class TestUrlShortener(unittest.TestCase):
 
     def test_shortened_length(self):
         urla = 'http://www.google.com'
