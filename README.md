@@ -48,4 +48,8 @@ distributing the newly written key in its cluster, and then, as a separate proce
 it to persistent storage. This persistent storage would act as the main source of truth,
 and also house any data that does not fit in RAM of the read endpoints, should our service
 grow beyond our initial visions. This would also mean that we would move the caching logic
+<<<<<<< HEAD
 to the write cluster.
+=======
+to the write cluster.
+>>>>>>> d65bcdfd4f2b2170a7d1596adf381badc2348e52
