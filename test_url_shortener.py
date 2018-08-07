@@ -16,5 +16,30 @@ class TestUrlShortener(unittest.TestCase):
             self.assertEqual(12, len(short_a))
             self.assertEqual(12, len(short_b))
 
+    def test_url_with_http_valid(self):
+        url = 'http://www.google.com'
+
+        self.assertTrue(main.url_valid(url))
+
+    def test_url_with_https_valid(self):
+        url = 'https://www.google.com'
+
+        self.assertTrue(main.url_valid(url))
+
+    def test_url_with_htp_not_valid(self):
+        url = 'htp://www.google.com'
+
+        self.assertFalse(main.url_valid(url))
+
+    def test_url_without_protocol_not_valid(self):
+        url = 'www.google.com'
+
+        self.assertFalse(main.url_valid(url))
+
+    def test_empty_url_not_valid(self):
+        url = ''
+
+        self.assertFalse(main.url_valid(url))
+
 if __name__ == '__main__':
     unittest.main()
